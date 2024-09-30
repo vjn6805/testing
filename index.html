@@ -3,95 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Flash Game</title>
+    <title>Hidden Flashing Colors</title>
     <style>
         body {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-            font-size: 2rem;
-            font-family: Arial, sans-serif;
-            color: white;
+            width: 100vw;
         }
-        @keyframes flash {
-            0% { background-color: red; }
-            33% { background-color: green; }
-            66% { background-color: blue; }
-            100% { background-color: red; }
+
+        @keyframes flashColors {
+            0% { background-color: black; }  /* Placeholder */
+            25% { background-color: black; } /* Placeholder */
+            50% { background-color: black; } /* Placeholder */
+            75% { background-color: black; } /* Placeholder */
+            100% { background-color: black; }  /* Placeholder */
         }
-        .flashing {
-            animation: flash 1s infinite;
+
+        body {
+            animation: flashColors 4s infinite;
         }
     </style>
 </head>
-<body class="flashing">
-    <div id="letter"></div>
+<body>
+<script>
+    // Base64 Encoded Hex Codes
+    const encodedColors = [
+        'NzM0RjU3', 
+        'OEE5QTVC', 
+        'NzM5M0Iz', 
+        'OTk2NTE1'  
+    ];
 
-    <script>
-        // Encrypted '0120240' code (base64 encoding)
-        const encryptedCode = 'MDEyMDI0MA=='; // base64 of '0120240'
+    // Decode Base64 to Hex
+    function decodeBase64(str) {
+        return atob(str);
+    }
 
-        // Function to check entered code
-        function checkCode(inputCode) {
-            const decodedCode = atob(encryptedCode);
-            return inputCode === decodedCode;
+    // Store colors in variables
+    const colors = encodedColors.map(decodeBase64);
+
+    // Create a new style element to inject the decoded colors
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        @keyframes flashColors {
+            0% { background-color: #${colors[0]}; }
+            25% { background-color: #${colors[1]}; }
+            50% { background-color: #${colors[2]}; }
+            75% { background-color: #${colors[3]}; }
+            100% { background-color: #${colors[0]}; }
         }
 
-        // Encrypted Letters for the word 'decode4'
-        const encryptedLetters = {
-            "red": atob('bQ=='),    // 'm'
-            "green": atob('dQ=='),  // 'u'
-            "blue": atob('ag==')    // 'j'
-        };
-
-        // Function to reveal letters based on background color
-        function revealLetter() {
-            const bgColor = window.getComputedStyle(document.body).backgroundColor;
-            let letter = "";
-            switch (bgColor) {
-                case 'rgb(255, 0, 0)': // Red
-                    letter = encryptedLetters["red"];
-                    break;
-                case 'rgb(0, 128, 0)': // Green
-                    letter = encryptedLetters["green"];
-                    break;
-                case 'rgb(0, 0, 255)': // Blue
-                    letter = encryptedLetters["blue"];
-                    break;
-                default:
-                    letter = "4"; // Display the last character '4' when background color is changed manually
-            }
-            document.getElementById("letter").innerText = letter;
+        body {
+            animation: flashColors 4s infinite;
         }
+    `;
 
-        // Start with flashing colors
-        let flashing = true;
-        let enteredCode = '';
-
-        // Check for '0120240' input in the console (encrypted)
-        window.addEventListener("keydown", (e) => {
-            if (!isNaN(e.key)) {  // Only accept numeric keys
-                enteredCode += e.key;
-                if (enteredCode.length === 7 && checkCode(enteredCode)) {
-                    flashing = false;
-                    document.body.classList.remove("flashing");
-                    revealLetter();
-                } else if (enteredCode.length === 7) {
-                    enteredCode = ''; // Reset if incorrect code is entered
-                }
-            } else {
-                enteredCode = ''; // Reset if any non-numeric key is pressed
-            }
-        });
-
-        // Periodically check the background color for updates (e.g., via inspect element changes)
-        setInterval(() => {
-            if (!flashing) {
-                revealLetter();
-            }
-        }, 1000);
-    </script>
+    // Append the new style element to the head of the document
+    document.head.appendChild(styleElement);
+</script>
 </body>
 </html>
